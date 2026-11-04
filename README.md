@@ -56,13 +56,43 @@
 ├── index.html         # 核心 DOM 结构与语义化布局
 ├── style.css          # 3D 空间透视矩阵、毛玻璃材质与明暗主题样式表
 ├── app.js             # 数学函数双曲空间引擎、12款拟真应用、音频合成与交互调度
+├── extension/         # 🌟 Chrome 扩展 (Manifest V3) - 任意网页真实标签页 3D 舞台调度
+│   ├── manifest.json
+│   ├── background/service-worker.js
+│   ├── content/stage-style.css
+│   ├── content/content-script.js
+│   └── icons/
 ├── .gitignore         # Git 忽略配置
 └── README.md          # 项目说明文档
 ```
 
 ---
 
-## 🚀 快速启动
+## 🧩 Chrome 浏览器扩展 (Manifest V3)
+
+本项目现已正式支持 Chrome / Edge / Brave 浏览器扩展，可在**任意网页**上一键唤出 3D 空间舞台调度，管理与切换真实的浏览器标签页！
+
+### 核心特性
+- **Shadow DOM 绝对隔离**：采用 Open Shadow DOM 与 Scoped CSS，与宿主网页样式零冲突。
+- **全局快捷键呼出**：按下 `Alt + W`（macOS 对应 `Option + W`）或点击浏览器插件图标。
+- **右下角 3D 半斜方块**：常驻于屏幕右下角，半斜身贴边呈现，悬浮或点击即可唤醒调度。
+- **真实标签页管理**：
+  - 实时抓取并呈现多标签页 Favicon 与视图缩略图。
+  - 悬浮卡片左上角红点，或按 `Delete` / `Backspace` 键直接关闭标签页。
+  - 点击任意卡片或按 `Enter` 键秒速跳转至该标签页。
+- **即时模糊搜索**：输入关键字即时过滤标签页。
+- **明暗双模液态主题**：一键无缝切换暗夜黑曜与白昼白璃主题。
+
+### 扩展安装方式
+1. 打开 Chrome 浏览器，访问 `chrome://extensions/`。
+2. 打开右上角的 **「开发者模式」** 开关。
+3. 点击左上角 **「加载已解压的扩展程序」**（Load unpacked）。
+4. 选择本项目目录下的 `extension` 文件夹即可完成安装！
+5. 在任意网页按下 `Alt+W` 或点击右下角水晶徽标体验 3D 舞台调度！
+
+---
+
+## 🚀 快速启动 (Web 原型)
 
 本项目为纯前端静态工程，无需安装任何 Node.js 依赖或打包构建：
 
