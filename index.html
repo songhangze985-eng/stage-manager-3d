@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>macOS 3D 舞台调度 (Stage Manager 3D)</title>
+  <link rel="stylesheet" href="style.css?v=4">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=ZCOOL+KuaiLe&family=ZCOOL+QingKe+HuangYou&family=SF+Pro+Display:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+</head>
+<body class="desktop-mode">
+  <!-- 桌面环境总容器 -->
+  <div id="desktop-env" class="desktop-env">
+    
+    <!-- 桌面动态背景壁纸 (进入舞台调度时渐隐消失) -->
+    <div class="wallpaper-layer" id="wallpaper">
+      <div class="wallpaper-mesh"></div>
+      <div class="wallpaper-glow glow-1"></div>
+      <div class="wallpaper-glow glow-2"></div>
+      <div class="wallpaper-glow glow-3"></div>
+      <div class="wallpaper-grid-lines"></div>
+    </div>
+
+    <!-- 舞台调度纯色背景层 (进入调度时呈现，干净纯粹的深邃哑光背景，去除了所有居中线条) -->
+    <div class="stage-solid-bg" id="stageSolidBg">
+      <div class="ambient-vignette"></div>
+      <div class="stage-floor-perspective"></div>
+    </div>
+
+    <!-- 极简顶部栏 (仅保留居中时间日期，左侧为 ESC 提示) -->
+    <header class="top-system-bar" id="topSystemBar">
+      <div class="topbar-left">
+        <div class="topbar-esc-btn" id="topbarEscBtn" role="button" tabindex="0" title="退出 3D 舞台调度">
+          <kbd>ESC</kbd>
+          <span>退出调度</span>
+        </div>
+      </div>
+      <div class="topbar-center">
+        <span class="topbar-datetime" id="topbarClock">11月4日 星期三 01:20</span>
+      </div>
+      <div class="topbar-right"></div>
+    </header>
+
+    <!-- 桌面常规主内容区 -->
+    <main class="desktop-workspace" id="desktopWorkspace">
+      
+      <!-- 拟态 B 站顶部栏 (替代原本的侧边栏) -->
+      <nav class="bili-header-wrapper" id="biliHeaderWrapper">
+        <!-- 1. 现代化高拟真玻璃质感主导航条 -->
+        <div class="bili-main-nav">
+          <div class="bili-nav-left">
+            <div class="bili-logo-group" id="biliLogoGroup">
+              <div class="glass-brand-icon" title="空间多任务调度中心">
+                <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <polygon points="12 2 2 7 12 12 22 7 12 2" fill="rgba(100, 210, 255, 0.28)" stroke="#64d2ff"/>
+                  <polyline points="2 17 12 22 22 17" stroke="#bf5af2"/>
+                  <polyline points="2 12 12 17 22 12" stroke="#0a84ff"/>
+                </svg>
+              </div>
+              <span class="bili-logo-text">空间调度</span>
+              <span class="bili-art-badge">STAGE PRO</span>
+            </div>
+            
+            <div class="bili-nav-links">
+              <span class="bili-link-item active" data-filter="all">首页</span>
+              <span class="bili-link-item" data-filter="dynamic">动态</span>
+              <span class="bili-link-item" data-filter="hot">热门</span>
+            </div>
+          </div>
+
+          <!-- 拟态玻璃圆角搜索框 -->
+          <div class="bili-search-box">
+            <span class="bili-search-icon">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            </span>
+            <input type="text" class="bili-search-input" id="biliSearchInput" placeholder="搜索空间卡片与多任务..." spellcheck="false" autocomplete="off" />
+            <div class="bili-hot-tag">🔥 120 FPS</div>
+          </div>
+
+          <!-- 右侧用户状态与热门 UI 交互组件 (明暗切换胶囊) -->
+          <div class="bili-nav-right">
+            <!-- 热门 UI 素材：明暗微动质感切换胶囊 (Day/Night Theme Toggle Switch) -->
+            <button class="theme-toggle-glass-btn" id="themeToggleBtn" role="switch" aria-checked="false" title="切换明暗色彩质感">
+              <span class="theme-switch-track">
+                <span class="theme-switch-thumb">
+                  <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="4.5"></circle>
+                    <line x1="12" y1="1" x2="12" y2="3"></line>
+                    <line x1="12" y1="21" x2="12" y2="23"></line>
+                    <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                    <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                    <line x1="1" y1="12" x2="3" y2="12"></line>
+                    <line x1="21" y1="12" x2="23" y2="12"></line>
+                    <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                    <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                  </svg>
+                  <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                  </svg>
+                </span>
+                <span class="theme-stars-cluster">
+                  <span class="theme-star star-1"></span>
+                  <span class="theme-star star-2"></span>
+                </span>
+              </span>
+              <span class="theme-mode-label" id="themeModeLabel">暗夜流光</span>
+            </button>
+
+            <!-- 现代化玻璃质感用户身份 Chip -->
+            <div class="glass-user-chip" title="当前工作区：Spatial Studio Pro">
+              <div class="glass-avatar">
+                <span class="avatar-sym">✦</span>
+              </div>
+              <span class="glass-user-status">在线</span>
+            </div>
+
+            <!-- 极简玻璃功能图标 -->
+            <div class="bili-action-icons">
+              <div class="bili-icon-pill" title="通知消息">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+                <span class="bili-badge-num">3</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2. B站分区频道栏 / 多界面切换栏 (承接原侧边栏功能) -->
+        <div class="bili-channel-bar" id="biliChannelBar">
+          <div class="channel-header-tag">
+            <span class="channel-dot"></span>
+            <span class="channel-tag-title">多任务分区</span>
+          </div>
+          <div class="bili-channel-list" id="sidebarStackList">
+            <!-- 动态渲染多界面频道胶囊 -->
+          </div>
+        </div>
+      </nav>
+
+      <!-- 桌面当前活动主窗口 -->
+      <div class="main-window-container" id="mainWindowContainer">
+        <div class="mac-window active-window shadow-xl" id="desktopActiveWindow">
+          <div class="window-titlebar">
+            <div class="window-controls">
+              <span class="ctrl-dot dot-close"></span>
+              <span class="ctrl-dot dot-minimize"></span>
+              <span class="ctrl-dot dot-expand"></span>
+            </div>
+            <div class="window-title-tab" id="activeWindowTitle">
+              <span class="tab-icon" id="activeWindowIcon">📊</span>
+              <span class="tab-label" id="activeWindowLabel">数据洞察仪表盘</span>
+            </div>
+            <div class="window-actions">
+              <span class="action-btn" title="分享" role="button" tabindex="0">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
+              </span>
+              <span class="action-btn" title="搜索" role="button" tabindex="0">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+              </span>
+              <span class="action-btn" title="视图切换" role="button" tabindex="0">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="9" y1="3" x2="9" y2="21"/></svg>
+              </span>
+            </div>
+          </div>
+          <div class="window-content" id="activeWindowContent">
+            <!-- 窗口内部交互内容 -->
+          </div>
+        </div>
+      </div>
+
+    </main>
+
+    <!-- 3D 舞台调度全屏展示层 (触发时激活) -->
+    <section class="stage-3d-viewport" id="stage3DViewport" aria-hidden="true">
+      
+      <!-- 3D 舞台卡片容器 (透视世界) -->
+      <div class="stage-world" id="stageWorld">
+        
+        <!-- 左侧展区 (紧凑排布，去除了文字描述) -->
+        <div class="stage-wing wing-left" id="wingLeft">
+          <div class="tier-section tier-top" data-tier="top">
+            <div class="cards-row" id="row-left-top"></div>
+          </div>
+          <div class="tier-section tier-middle" data-tier="middle">
+            <div class="cards-row" id="row-left-mid"></div>
+          </div>
+          <div class="tier-section tier-bottom" data-tier="bottom">
+            <div class="cards-row" id="row-left-bot"></div>
+          </div>
+        </div>
+
+        <!-- 居中分界通道 (无任何线条与杂质，保持通透向内的纯粹空间) -->
+        <div class="stage-center-corridor" id="centerCorridor"></div>
+
+        <!-- 右侧展区 (紧凑排布，去除了文字描述) -->
+        <div class="stage-wing wing-right" id="wingRight">
+          <div class="tier-section tier-top" data-tier="top">
+            <div class="cards-row" id="row-right-top"></div>
+          </div>
+          <div class="tier-section tier-middle" data-tier="middle">
+            <div class="cards-row" id="row-right-mid"></div>
+          </div>
+          <div class="tier-section tier-bottom" data-tier="bottom">
+            <div class="cards-row" id="row-right-bot"></div>
+          </div>
+        </div>
+
+      </div>
+
+    </section>
+
+    <!-- 右下角触发感应区与弹出圆角方形按钮 -->
+    <div class="hot-corner-trigger-zone bottom-right" id="hotCornerBR">
+      <div class="corner-glow-hint"></div>
+      <div class="rounded-square-trigger-btn" id="stageTriggerBtn" role="button" tabindex="0" title="进入 3D 舞台调度">
+        <div class="btn-inner-glass">
+          <div class="stage-icon-symbol">
+            <span class="wing-dot left-dot"></span>
+            <span class="wing-dot center-bar"></span>
+            <span class="wing-dot right-dot"></span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 左下角备用感应区 (也可快捷触发) -->
+    <div class="hot-corner-trigger-zone bottom-left" id="hotCornerBL">
+      <div class="corner-glow-hint"></div>
+    </div>
+
+    <!-- 底部 Dock 栏 -->
+    <div class="mac-dock" id="macDock">
+      <div class="dock-item" data-app="dashboard" title="数据分析">📊</div>
+      <div class="dock-item" data-app="code" title="VS Code">💻</div>
+      <div class="dock-item" data-app="safari" title="Safari 浏览器">🌐</div>
+      <div class="dock-item" data-app="music" title="Apple Music">🎵</div>
+      <div class="dock-item" data-app="design" title="设计画板">🎨</div>
+      <div class="dock-item" data-app="terminal" title="终端">⚡️</div>
+      <div class="dock-separator"></div>
+      <div class="dock-item trigger-dock-item" id="dockStageTrigger" title="切换 3D 舞台调度">
+        <div class="dock-stage-badge">3D</div>
+        🪟
+      </div>
+    </div>
+
+  </div>
+
+  <script src="app.js?v=4"></script>
+</body>
+</html>
