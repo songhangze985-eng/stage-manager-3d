@@ -766,19 +766,6 @@ function renderStage3DGrid() {
           }
         }
         sfx.playPop();
-        if (item.tier === 1) {
-          // 下层卡片向上拉取平铺 (提升至中心高度，摆正无倾角，置前放大)
-          card.style.transform = 'translate3d(0, -68px, 280px) rotateY(0deg) rotateX(0deg) scale(1.22)';
-          card.style.zIndex = '300';
-        } else {
-          card.style.transform = `${curveData.transform} translateZ(55px) scale(1.12)`;
-          card.style.zIndex = '100';
-        }
-      });
-
-      card.addEventListener('mouseleave', () => {
-        card.style.transform = curveData.transform;
-        card.style.zIndex = curveData.zIndex;
       });
 
       rowEl.appendChild(card);

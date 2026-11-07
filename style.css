@@ -1444,7 +1444,6 @@ body.stage-mode-active .hot-corner-trigger-zone {
 /* 远端内侧卡片：更靠近中心走廊，数学纵深 Z=28px (始终置于父容器之前，杜绝点击穿透bug) */
 .stage-card.depth-far {
   width: 198px;
-  transform: translateZ(28px) scale(0.83);
   opacity: 0.88;
   filter: brightness(0.9) contrast(0.96);
   z-index: 15;
@@ -1456,7 +1455,6 @@ body.stage-mode-active .hot-corner-trigger-zone {
 /* 近端外侧卡片：靠近观察者，数学纵深 Z=165px */
 .stage-card.depth-near {
   width: 248px;
-  transform: translateZ(165px) scale(1.04);
   opacity: 1;
   filter: brightness(1);
   z-index: 25;
