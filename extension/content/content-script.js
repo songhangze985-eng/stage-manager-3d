@@ -309,7 +309,7 @@
     // 内容缩略图或高雅几何 fallback
     let thumbnailHtml = '';
     if (tab.thumbnail) {
-      thumbnailHtml = `<img class="card-thumbnail-img" src="${tab.thumbnail}" alt="preview" />`;
+      thumbnailHtml = `<img class="card-thumbnail-img" src="${escapeHtml(tab.thumbnail)}" alt="preview" />`;
     } else {
       const artGradients = [
         'linear-gradient(135deg, rgba(10,132,255,0.4), rgba(191,90,242,0.3))',
@@ -331,7 +331,7 @@
           <div class="card-traffic-lights">
             <button class="card-close-btn" title="关闭标签页" data-tab-close="${tab.id}"></button>
           </div>
-          <img class="card-favicon" src="${favSrc}" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\\'http://www.w3.org/2000/svg\\' width=\\'16\\' height=\\'16\\' viewBox=\\'0 0 24 24\\'><circle cx=\\'12\\' cy=\\'12\\' r=\\'8\\' fill=\\'%2364d2ff\\'/></svg>'" />
+          <img class="card-favicon" src="${escapeHtml(favSrc)}" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\\'http://www.w3.org/2000/svg\\' width=\\'16\\' height=\\'16\\' viewBox=\\'0 0 24 24\\'><circle cx=\\'12\\' cy=\\'12\\' r=\\'8\\' fill=\\'%2364d2ff\\'/></svg>'" />
           <span class="card-domain-badge">${escapeHtml(tab.domain || 'localhost')}</span>
         </div>
         <span class="card-depth-badge">${depthClass === 'depth-near' ? 'NEAR Z' : 'FAR Z'}</span>
